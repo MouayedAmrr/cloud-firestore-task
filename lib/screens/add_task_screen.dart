@@ -43,7 +43,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
       }
     }
 
-    final Task task = Task(id: id, name: name, status: _status);
+    final Task task = Task(id: id, name: name, status: _status, createdAt: Timestamp.now());
     await _firestore.collection('tasks').doc(id).set(task.toMap());
 
     ScaffoldMessenger.of(context).showSnackBar(

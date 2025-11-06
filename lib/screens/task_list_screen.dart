@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 class TaskListScreen extends StatefulWidget {
   const TaskListScreen({super.key});
@@ -150,21 +151,32 @@ class _TaskListScreenState extends State<TaskListScreen> {
                       ),
                       child: ListTile(
                         title: Text(task['name']),
-                        subtitle: Row(
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              'Status: ',
-                              style: const TextStyle(
-                                color: Colors.black54,
-                                fontSize: 18,
+                            Row(
+                              children: [
+                                Text(
+                                  'Status: ',
+                                  style: const TextStyle(
+                                    color: Colors.black54,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                                Text(
+                                  '${task['status']}',
+                                  style: task['status'] == 'open'
+                                      ? TextStyle(color: Colors.green, fontSize: 18)
+                                      : TextStyle(color: Colors.red, fontSize: 18),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 4),
+                            if (task['createdAt'] != null)
+                              Text(
+                                'Created: ${DateFormat('yyyy-MM-dd HH:mm').format(task['createdAt'].toDate())}',
+                                style: const TextStyle(fontSize: 14, color: Colors.grey),
                               ),
-                            ),
-                            Text(
-                              '${task['status']}',
-                              style: task['status'] == 'open'
-                                  ? TextStyle(color: Colors.green, fontSize: 18)
-                                  : TextStyle(color: Colors.red, fontSize: 18),
-                            ),
                           ],
                         ),
                         trailing: Row(
