@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        FLUTTER_DIR = "${env.WORKSPACE}\\flutter_sdk"
-        PATH = "${env.PATH};${env.WORKSPACE}\\flutter_sdk\\bin"
+        FLUTTER_BIN = "C:\\src\\flutter\\bin\\flutter"
+        PATH = "${env.PATH};C:\\src\\flutter\\bin"
     }
 
     stages {
@@ -15,30 +15,24 @@ pipeline {
             }
         }
 
-        stage('Install Flutter') {
+        stage('Flutter Doctor') {
             steps {
                 echo "Checking Flutter SDK..."
-                bat '''
-                if not exist "%FLUTTER_DIR%" (
-                    git clone https://github.com/flutter/flutter.git -b 3.38.4 "%FLUTTER_DIR%"
-                )
-                echo Flutter SDK path: %FLUTTER_DIR%
-                %FLUTTER_DIR%\\bin\\flutter --version
-                '''
+                bat '"%FLUTTER_BIN%" doctor -v'
             }
         }
 
         stage('Dependencies') {
             steps {
                 echo "Running flutter pub get..."
-                bat '%FLUTTER_DIR%\\bin\\flutter pub get'
+                bat '"%FLUTTER_BIN%" pub get --offline --no-precompile'
             }
         }
 
         stage('Run Unit Tests') {
             steps {
                 echo "Running unit tests with coverage..."
-                bat '%FLUTTER_DIR%\\bin\\flutter test --coverage'
+                bat '"%FLUTTER_BIN%" test --coverage --machine'
             }
         }
 
